@@ -43,6 +43,10 @@ public class JREScriptRunner extends AbstractScriptRunner {
 	public JREScriptRunner() {
 		engine = new ScriptEngineManager().getEngineByName("javascript");
 	}
+
+	public JREScriptRunner(String engineName) {
+		engine = new ScriptEngineManager().getEngineByName(engineName);
+	}
 	
 	@Override
 	public String getName() {
