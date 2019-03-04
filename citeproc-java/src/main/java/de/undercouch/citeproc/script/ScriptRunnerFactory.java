@@ -29,24 +29,29 @@ public class ScriptRunnerFactory {
 		 * Automatically detect the JavaScript engine
 		 */
 		AUTO,
-		
+
 		/**
 		 * Create a runner that explicitly uses the Java Scripting API
 		 */
 		JRE,
-		
+
 		/**
 		 * Create a runner that explicitly uses the V8 runtime
 		 */
-		V8
+		V8,
+
+		/**
+		 * Create a runner that explicitly uses the Nashorn runtime
+		 */
+		NASHORN
 	}
-	
+
 	/**
 	 * The runner to create
 	 */
 	private static AtomicReference<RunnerType> runner =
 			new AtomicReference<>(RunnerType.AUTO);
-	
+
 	/**
 	 * Sets the type of runners this factory creates. The default type is
 	 * {@link RunnerType#AUTO}. Normally, you shouldn't have to change this.
@@ -58,21 +63,28 @@ public class ScriptRunnerFactory {
 	public static RunnerType setRunnerType(RunnerType type) {
 		return runner.getAndSet(type);
 	}
-	
+
 	/**
 	 * @return a {@link ScriptRunner} that uses the Java Scripting API
 	 */
 	private static ScriptRunner createJreRunner() {
 		return new JREScriptRunner();
 	}
-	
+
 	/**
 	 * @return a {@link ScriptRunner} that uses the V8 runtime
 	 */
 	private static ScriptRunner createV8Runner() {
 		return new V8ScriptRunner();
 	}
-	
+
+	/**
+	 * @return a {@link ScriptRunner} that uses the Nashorn runtime
+	 */
+    private static ScriptRunner createNashornRunner() {
+        return new NashornScriptRunner();
+    }
+
 	/**
 	 * Creates a new {@link ScriptRunner} instance according to the
 	 * type set with {@link #setRunnerType(RunnerType)}
@@ -80,7 +92,7 @@ public class ScriptRunnerFactory {
 	 */
 	public static ScriptRunner createRunner() {
 		RunnerType t = runner.get();
-		
+
 		switch (t) {
 		case AUTO:
 			if (supportsV8()) {
@@ -88,18 +100,21 @@ public class ScriptRunnerFactory {
 			}
 			//fall back to JRE
 			return createJreRunner();
-		
+
 		case JRE:
 			return createJreRunner();
-		
+
 		case V8:
 			return createV8Runner();
-		
+
+        case NASHORN:
+            return createNashornRunner();
+
 		default:
 			throw new RuntimeException("Invalid runner type");
 		}
 	}
-	
+
 	/**
 	 * @return true if the V8 runtime is available, false otherwise
 	 */

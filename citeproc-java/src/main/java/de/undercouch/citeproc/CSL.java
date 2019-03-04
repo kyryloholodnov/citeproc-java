@@ -399,7 +399,7 @@ public class CSL implements Closeable {
 	 * @return the runner
 	 * @throws IOException if bundles scripts could not be loaded
 	 */
-	private static ScriptRunner getRunner() throws IOException {
+	public static ScriptRunner getRunner() throws IOException {
 		if (sharedRunner.get() == null) {
 			//create JavaScript runner
 			ScriptRunner runner = ScriptRunnerFactory.createRunner();
